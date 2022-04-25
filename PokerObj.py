@@ -1,7 +1,6 @@
 from random import randint,random
 import copy
 
-from sympy import true
 
 class PokerGameVars():
     GamePhase = 'Waiting start'
@@ -48,6 +47,7 @@ class PackCards(object):
         self.PackShuffle = copy.copy(self.PackOrdered)
 
 
+
     def Shuffle(self):
         Inter = self.PackOrdered
         self.PackShuffle = []
@@ -60,6 +60,8 @@ class PackCards(object):
     def PrintPack(self):
         for i in self.PackShuffle:
             i.PrintCard()
+    def AcceptCard(self,Card):
+        self.PackShuffle.append(Card)
 
 class GroupCards(PackCards):
     def __init__(self,SetOfCards):
@@ -85,13 +87,13 @@ class Player(PokerGameVars):
     def AcceptCard(self,Card):
         self.CardInHand.PackShuffle.append(Card)
 
-class AIPlayer(Player):
+class AIPlayer(Player,PokerGameVars):
     def __init__(self) -> None:
         super().__init__()
 
 
-    def PlaceEntranceFee(self,cls):
-        self.Capital = self.Capital - cls.EntranceFee
+    def PlaceEntranceFee(self):
+        self.Capital = self.Capital - super().EntranceFee
 
 
     def PlaceBett(self):
@@ -148,6 +150,7 @@ class PokerGameLoop(PokerGameVars):
         self.RoundCompleted = 0
         self.PlayersActiveInRound = []
         self.Stake = 0
+        self.Table = Table()
 
 
 
@@ -172,6 +175,9 @@ class PokerGameLoop(PokerGameVars):
                     self.DealPreFlop()
                 if i == 'PreFlopBetting':
                     self.GetPreFlopBets()
+                if i == 'Flop':
+                    self.DealFlop()
+                    self.DisplayTable()
 
 
             CountRounds =+ 1
@@ -221,9 +227,14 @@ class PokerGameLoop(PokerGameVars):
             print(self.Stake)
                     #self.GetPreFlopBets()
 
+    def DealFlop(self):
+        self.Dealer.DealToObject(self.Table.CardInHand)
+        self.Dealer.DealToObject(self.Table.CardInHand)
+        self.Dealer.DealToObject(self.Table.CardInHand)
+    
     def DisplayTable(self):
         print('########################################')
-        for i in self.
+        self.Table.CardInHand.PrintPack()
 
             
 
